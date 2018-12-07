@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+function locality() {
+  # Current file path
+  echo $(readlink -f $0)
+  local filePath=$1
+  local locality=$2
+  if [[ -z "${filePath}" ]]; then echo "You must define a file"; exit 1; fi
+  if [[ -z "${locality}" ]]; then echo "You must define a locality"; exit 1; fi
+
+  modify_file_name "${filePath}" "${locality}"
+}
+
+# Prepends a string to the file name in the given path
+#
+# Arguments:
+# 
+#   $1 - The file path
+#   $2 - The string to prepend
+# 
+# Examples: 
+#  
+#  modify_file_name ~/test/.zshrc loc1 -> ~/test/loc1.zshrc
+#
+function modify_file_name() {
+  local filePath=$1
+  local locality=$2
+  local regex="^(.+/)\.?([^/]+)$"
+  sed -E 's|'"${regex}"'|\1'"${locality}"'.\2|' <<< "${filePath}"
+}
+
+# Execute only if not sourced
+# See https://stackoverflow.com/a/23009039/2553104
+[ "${0}" = "${BASH_SOURCE[0]}" ] && locality "$@"
