@@ -1,15 +1,69 @@
 #!/usr/bin/env bash
 
+FILE=""
+LOCALITY=""
+
 function locality() {
-  # Current file path
-  echo $(readlink -f $0)
+  set_args "$@"
+  exit 0
   local filePath=$1
   local locality=$2
-  if [[ -z "${filePath}" ]]; then echo "You must define a file"; exit 1; fi
+
+
+  if sourced; then 
+    filePath=$(readlink -f "$0")
+    echo $filePath
+  fi
   if [[ -z "${locality}" ]]; then echo "You must define a locality"; exit 1; fi
 
   modify_file_name "${filePath}" "${locality}"
 }
+
+function set_args() {
+
+  local positionals=()
+
+  while (( "$#" )); do
+    case "$1" in
+      -f|--file)
+        FILE=$2
+        shift 2
+        ;;
+      -l|--locality)
+        LOCALITY=$2
+        shift 2
+        ;;
+      -h|--help)
+        help
+        exit 0 
+        ;;
+      --) # end argument parsing
+        shift
+        break
+        ;;
+      -*|--*=) # unsupported flags
+        echo "Error: Unsupported flag $1" >&2
+        exit 1
+        ;;
+      *) # preserve positional arguments
+        positionals+=("$1")
+        shift
+        ;;
+    esac
+  done
+  # set positional arguments in their proper place
+  eval set -- "$PARAMS"
+
+  echo "FILE $FILE"
+  echo "LOCALITY $LOCALITY"
+
+  echo "${positionals[@]}"
+}
+
+function usage() {
+  echo "usage"
+}
+
 
 # Prepends a string to the file name in the given path
 #
@@ -29,6 +83,12 @@ function modify_file_name() {
   sed -E 's|'"${regex}"'|\1'"${locality}"'.\2|' <<< "${filePath}"
 }
 
-# Execute only if not sourced
+function sourced() {
+  [ "${0}" != "${BASH_SOURCE[0]}" ]  
+}
+
+
+# Execute only if not sourced, e.g. run directly from shell
 # See https://stackoverflow.com/a/23009039/2553104
-[ "${0}" = "${BASH_SOURCE[0]}" ] && locality "$@"
+#if ! sourced; then locality "$@"; fi
+locality "$@"
