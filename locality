@@ -2,6 +2,7 @@
 
 FILE=""
 LOCALITY=""
+DEBUG=0
 
 function locality() {
   parse_args "$@"
@@ -19,17 +20,14 @@ function parse_args() {
   if [[ -e "$2" ]]; then 
     LOCALITY="$2";
   else 
-    LOCALITY=$(read_locality_config) || { echo "bla"; exit 1; }
+    LOCALITY=$(read_locality_config) || { exit 1; }
   fi
-
-  echo "FILE: $FILE"
-  echo "LOCALITY: $LOCALITY"
 }
 
 # Get the name of the calling script 
 # See here: https://www.experts-exchange.com/questions/25025178/Determine-the-name-of-a-calling-Bash-script.html
 function get_calling_file() {
-  echo $(basename $(ps -f -p $PPID | tail -1 | awk '{print $NF}'))
+  echo $(realpath $(ps -f -p $PPID | tail -1 | awk '{print $NF}'))
 }
 
 # Read locality variable from configuration file 
