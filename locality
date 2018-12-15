@@ -5,9 +5,8 @@ LOCALITY=""
 
 function locality() {
   parse_args "$@"
-  exit 0
 
-  modify_file_name "${filePath}" "${locality}"
+  modify_file_name "${FILE}" "${LOCALITY}"
 }
 
 function parse_args() {

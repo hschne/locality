@@ -1,3 +1,2 @@
-./locality
-
+./locality 
 exit 1
