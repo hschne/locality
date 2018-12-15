@@ -1,3 +1,3 @@
-source ./locality
+./locality
 
-locality loc2
+exit 1

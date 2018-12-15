@@ -4,60 +4,44 @@ FILE=""
 LOCALITY=""
 
 function locality() {
-  set_args "$@"
+  parse_args "$@"
   exit 0
-  local filePath=$1
-  local locality=$2
-
-
-  if sourced; then 
-    filePath=$(readlink -f "$0")
-    echo $filePath
-  fi
-  if [[ -z "${locality}" ]]; then echo "You must define a locality"; exit 1; fi
 
   modify_file_name "${filePath}" "${locality}"
 }
 
-function set_args() {
+function parse_args() {
+  if [[ -e "$1" ]]; then 
+    FILE="$1";
+  else 
+    FILE=$(get_calling_file "$@")
+  fi
 
-  local positionals=()
+  if [[ -e "$2" ]]; then 
+    LOCALITY="$2";
+  else 
+    LOCALITY=$(read_locality_config) || { echo "bla"; exit 1; }
+  fi
 
-  while (( "$#" )); do
-    case "$1" in
-      -f|--file)
-        FILE=$2
-        shift 2
-        ;;
-      -l|--locality)
-        LOCALITY=$2
-        shift 2
-        ;;
-      -h|--help)
-        help
-        exit 0 
-        ;;
-      --) # end argument parsing
-        shift
-        break
-        ;;
-      -*|--*=) # unsupported flags
-        echo "Error: Unsupported flag $1" >&2
-        exit 1
-        ;;
-      *) # preserve positional arguments
-        positionals+=("$1")
-        shift
-        ;;
-    esac
-  done
-  # set positional arguments in their proper place
-  eval set -- "$PARAMS"
+  echo "FILE: $FILE"
+  echo "LOCALITY: $LOCALITY"
+}
 
-  echo "FILE $FILE"
-  echo "LOCALITY $LOCALITY"
+# Get the name of the calling script 
+# See here: https://www.experts-exchange.com/questions/25025178/Determine-the-name-of-a-calling-Bash-script.html
+function get_calling_file() {
+  echo $(basename $(ps -f -p $PPID | tail -1 | awk '{print $NF}'))
+}
 
-  echo "${positionals[@]}"
+# Read locality variable from configuration file 
+function read_locality_config() {
+  locality_config="${HOME}/.config/.locality"
+  if [[ ! -f ${locality_config} ]]; then exit 1; fi
+  
+  source "${locality_config}"
+
+  if [[ -z $LOCALITY ]]; then exit 1; fi
+  echo "${LOCALITY}"
 }
 
 function usage() {
@@ -90,5 +74,4 @@ function sourced() {
 
 # Execute only if not sourced, e.g. run directly from shell
 # See https://stackoverflow.com/a/23009039/2553104
-#if ! sourced; then locality "$@"; fi
-locality "$@"
+if ! sourced; then locality "$@"; fi
