@@ -10,6 +10,13 @@ function locality() {
   modify_file_name "${FILE}" "${LOCALITY}"
 }
 
+# Parse arguments of command
+#
+# Arguments:
+# 
+#   $1 - The file path. If not set the current file path will be used
+#   $2 - The locality. If not set the locality from the configuration file is used
+# 
 function parse_args() {
   if [[ -e "$1" ]]; then 
     FILE="$1";
@@ -25,12 +32,13 @@ function parse_args() {
 }
 
 # Get the name of the calling script 
+#
 # See here: https://www.experts-exchange.com/questions/25025178/Determine-the-name-of-a-calling-Bash-script.html
 function get_calling_file() {
   echo $(realpath $(ps -f -p $PPID | tail -1 | awk '{print $NF}'))
 }
 
-# Read locality variable from configuration file 
+# Read locality variable by sourcing configuration file '~/.config/.locality'
 function read_locality_config() {
   locality_config="${HOME}/.config/.locality"
   if [[ ! -f ${locality_config} ]]; then exit 1; fi
@@ -64,11 +72,11 @@ function modify_file_name() {
   sed -E 's|'"${regex}"'|\1'"${locality}"'.\2|' <<< "${filePath}"
 }
 
+# Check if program is executed directly from the command line or sourced
+# 
+# See https://stackoverflow.com/a/23009039/2553104
 function sourced() {
   [ "${0}" != "${BASH_SOURCE[0]}" ]  
 }
 
-
-# Execute only if not sourced, e.g. run directly from shell
-# See https://stackoverflow.com/a/23009039/2553104
 if ! sourced; then locality "$@"; fi

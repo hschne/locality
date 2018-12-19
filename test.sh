@@ -1,5 +1,5 @@
-file=$(./locality); [ -f $file ] && source $file
-
-myfunc
+file=$(./locality); 
+echo "FILE: $file"
+[[ -f $file ]] && source $file
 
 exit 1
