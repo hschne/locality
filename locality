@@ -2,7 +2,6 @@
 
 FILE=""
 LOCALITY=""
-DEBUG=0
 
 function locality() {
   parse_args "$@"
@@ -25,7 +24,7 @@ function parse_args() {
   fi
 
   if [[ -z "$2" ]]; then 
-    LOCALITY=$(read_locality_config) || { exit 1; }
+    LOCALITY=$(read_locality_config) || { echo "Failed to read locality configuration. Make sure that '~/.config/.locality' exists and contains 'LOCALITY=<your-locality>'"; exit 1; }
   else 
     LOCALITY="$2";
   fi
@@ -35,20 +34,16 @@ function parse_args() {
 #
 # See here: https://www.experts-exchange.com/questions/25025178/Determine-the-name-of-a-calling-Bash-script.html
 function get_calling_file() {
-  echo $(realpath $(ps -f -p $PPID | tail -1 | awk '{print $NF}'))
+  realpath "$(ps -f -p $PPID | tail -1 | awk '{print $NF}')"
 }
 
 # Read locality variable by sourcing configuration file '~/.config/.locality'
 function read_locality_config() {
-  if [[ -z "$1" ]]; then 
-    locality_config="${HOME}/.config/.locality"
-  else 
-    locality_config="$1"
-  fi
-
+  locality_config="${HOME}/.config/.locality"
+  
   if [[ ! -f ${locality_config} ]]; then exit 1; fi
 
-  source "${locality_config}"
+  source "$locality_config"
 
   if [[ -z $LOCALITY ]]; then exit 1; fi
   echo "${LOCALITY}"
@@ -73,8 +68,8 @@ function usage() {
 function modify_file_name() {
   local filePath=$1
   local locality=$2
-  local regex="^(.+/)\.?([^/]+)$"
-  sed -E 's|'"${regex}"'|\1'"${locality}"'.\2|' <<< "${filePath}"
+  local regex="^(.+/)(\.)?([^/]+)$"
+  sed -E 's|'"${regex}"'|\1\2'"${locality}"'.\3|' <<< "${filePath}"
 }
 
 # Check if program is executed directly from the command line or sourced
@@ -83,5 +78,11 @@ function modify_file_name() {
 function sourced() {
   [ "${0}" != "${BASH_SOURCE[0]}" ]  
 }
+
+function handle_error() {
+  echo "An error occured, exit code $?"
+}
+
+trap 'handle $?' ERR
 
 if ! sourced; then locality "$@"; fi
