@@ -82,6 +82,19 @@ antigen bundle hschne/locality
  git clone https://github.com/hschne/locality ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/locality
 ```
 
+## Advanced Usage
+
+You can use Locality to load custom configurations for a variety of programs. Basically anything that can run bash scripts can somehow use Locality.
+
+### Vim
+
+To use locality within Vim and load a custom configuration file add this to your `.vimrc`: 
+
+```vim
+let locality_file = system('locality $HOME/.vimrc') 
+exec "source " . locality_file # Sources $HOME/.<locality>.vim
+```
+
 ## License
 
 [MIT][LICENSE] (c) [@hschne](https://github.com/hschne)
