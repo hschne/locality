@@ -83,6 +83,6 @@ function handle_error() {
   echo "An error occured, exit code $?"
 }
 
-trap 'handle $?' ERR
+trap 'handle_error $?' ERR
 
 if ! sourced; then locality "$@"; fi
