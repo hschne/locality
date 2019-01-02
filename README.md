@@ -99,7 +99,7 @@ To use locality within Vim and load a custom configuration file add this to your
 
 ```vim
 let locality_file = system('locality $HOME/.vimrc') 
-exec "source " . locality_file # Sources $HOME/.<locality>.vim
+exec "source " . locality_file " Sources $HOME/.<locality>.vim
 ```
 
 ## License
