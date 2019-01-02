@@ -26,13 +26,37 @@ Locality helps you with that by **resolving file paths to a file that depends on
 
 Locality is at its core a shell script. A zsh plugin is also provided. 
 
-### Basic Installation & Usage
+###  Basic Installation
 
 Clone this repository and add the folder to your `$PATH`.
 
 ```sh
 git clone git@github.com:hschne/locality.git && export PATH=$PWD/locality:$PATH
 ```
+
+### Installation as ZSH Plugin
+
+You can also use the plugin manager of your choice to install Locality
+
+#### Zplug
+
+```
+zplug "hschne/locality"
+```
+
+#### Antigen 
+
+```
+antigen bundle hschne/locality
+```
+
+#### Oh my Zsh
+
+```
+ git clone https://github.com/hschne/locality ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/locality
+```
+
+### Usage
 
 Create the locality configuration file in `~/.config/.locality` and specify the current location, for example: 
 
@@ -47,44 +71,27 @@ locality $HOME/.zshrc # Returns $HOME/.locality.zshrc - hidden files remain hidd
 locality $HOME/somefile # $HOME/locality.somefile
 ```
 
-You can use this to source files based on the current location. For example, add this to your `.zshrc`.
-
-```bash
-# Load '$HOME/.work.zshrc' at work and '$HOME/.home.zshrc' at home
-source $(locality $HOME/.zshrc)
-```
-
-### Usage with ZSH
-
-Locality comes with a zsh plugin that simplifies the sourcing of files - for example, gracefully handling non existing files. To source files use: 
-
-```bash
-locality-load $HOME/.zshrc # sources $HOME/.locality.zsh
-```
 
 Install using the plugin manager of your choice. 
 
-### Zplug
-
-```
-zplug "hschne/locality"
-```
-
-### Antigen 
-
-```
-antigen bundle hschne/locality
-```
-
-### Oh my Zsh
-
-```
- git clone https://github.com/hschne/locality ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/locality
-```
 
 ## Advanced Usage
 
-You can use Locality to load custom configurations for a variety of programs. Basically anything that can run bash scripts can somehow use Locality.
+You can use Locality to load custom configurations for a variety of tools. Basically anything that can run bash scripts can somehow use Locality.
+
+### ZSH
+
+To load a custom .zshrc For example, add this to your `.zshrc`.
+
+```bash
+source $(locality $HOME/.zshrc) # Load '$HOME/.<locality>.zshrc'
+```
+
+If you installed the Locality zsh plugin you may also use the built-in `locality-load` function, which handles things like invalid files
+
+```
+locality-load $HOME/.zshrc # sources $HOME/.locality.zsh
+```
 
 ### Vim
 
