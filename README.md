@@ -98,5 +98,3 @@ exec "source " . locality_file # Sources $HOME/.<locality>.vim
 ## License
 
 [MIT][LICENSE] (c) [@hschne](https://github.com/hschne)
-
-
