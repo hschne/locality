@@ -12,13 +12,13 @@ Locality is a simple shell script that allows you to change file paths based on 
 This is very useful if you work on multiple workstations and want to load a customized configuration on each one.
 
 Say you have the workstations `home` and `work`. You use zsh on both, and so have a `.zshrc` that you keep in sync using your [dotfile manager of choice](https://github.com/webpro/awesome-dotfiles#tools). 
-But there are some customizations that are exclusive to each workstation. You could simply add this to your `.zshrc`:
+But there are some customizations that are exclusive to each workstation. You could simply add this to your `.zshrc` and put any customizations in there:
 
 ```
 source ~/.zshrc.local
 ```
 
-and put your customizations in there. However, this comes with the caveat of not being able to keep this file in sync across multiple workstations, thus losing access to it. 
+However, this comes with the caveat of not being able to keep this file in sync across multiple workstations, thus losing access to it. 
 
 Locality helps you with that by **resolving file paths to a file that depends on your current workstation**.
 
@@ -79,7 +79,7 @@ Install using the plugin manager of your choice.
 
 You can use Locality to load custom configurations for a variety of tools. Basically anything that can run bash scripts can somehow use Locality.
 
-### ZSH
+### Zsh
 
 To load a custom .zshrc For example, add this to your `.zshrc`.
 
