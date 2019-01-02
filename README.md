@@ -67,8 +67,8 @@ echo "LOCALITY=work" > ~/.config/.locality
 Run locality with a given file path to get a localized version of it:
 
 ```sh 
-locality $HOME/.zshrc # Returns $HOME/.locality.zshrc - hidden files remain hidden
-locality $HOME/somefile # $HOME/locality.somefile
+locality $HOME/.zshrc # Returns $HOME/.work.zshrc - hidden files remain hidden
+locality $HOME/somefile # $HOME/work.somefile
 ```
 
 
